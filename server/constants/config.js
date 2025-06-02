@@ -6,4 +6,4 @@
 
 const CHAT_TOKEN = "chat-token";
 
-export { corsOptions, CHAT_TOKEN };
+export {  CHAT_TOKEN };
