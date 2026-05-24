@@ -335,7 +335,7 @@ const mail = async (req, res) => {
     // Send email using Resend
     await resend.emails.send({
       from: "onboarding@resend.dev",
-      to: email,
+      to: "furwedimpact4@gmail.com",
       subject: "Verification Code",
       html: `
         <div style="font-family: Arial, sans-serif; font-size: 20px; color: #333; background-color: #f7f7f7; padding: 20px; border-radius: 5px;">
