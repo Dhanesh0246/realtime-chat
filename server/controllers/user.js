@@ -24,6 +24,8 @@ const newUser = TryCatch(async (req, res, next) => {
   const { email, name, password, bio, code } = req.body;
   console.log(email, name, password, bio, code);
   let present = await Code.findOne({ email });
+  console.log("Stored code:", present?.code);
+  console.log("Entered code:", code);
   if (present) {
     if (present.code !== code.toString()) {
       return res.status(400).send("Incorrect code");
