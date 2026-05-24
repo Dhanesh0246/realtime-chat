@@ -332,7 +332,7 @@ const mail = async (req, res) => {
       service: "gmail",
       auth: {
         user: "gldhanesh22@gmail.com",
-        pass: "pcyp zcjb hcni cbvi",
+        pass: "gqku dkpe uwtk yexg",
       },
     });
 
