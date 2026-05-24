@@ -27,7 +27,7 @@ const newUser = TryCatch(async (req, res, next) => {
   console.log("Stored code:", present?.code);
   console.log("Entered code:", code);
   if (present) {
-    if (present.code !== code.toString()) {
+    if (present.code == code.toString()) {
       return res.status(400).send("Incorrect code");
     } else {
       const file = req.file;
