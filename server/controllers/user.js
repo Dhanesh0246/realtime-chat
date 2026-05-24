@@ -17,6 +17,8 @@ import { ErrorHandler } from "../utils/utility.js";
 import { v2 as cloudinary } from "cloudinary";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import { Resend } from "resend";
+const resend = new Resend("re_AUWkPULW_Q6VFv7UyS31xo7xFNruGeNPq");
 
 const newUser = TryCatch(async (req, res, next) => {
   const { email, name, password, bio, code } = req.body;
@@ -314,11 +316,14 @@ const google = async (req, res, next) => {
     next(error);
   }
 };
-const mail = async (req, res) => {
+
+export const mail = async (req, res) => {
   const { email } = req.body;
+
   const code = Math.floor(1000 + Math.random() * 9000);
 
   try {
+    // Save or update verification code
     let present = await Code.findOne({ email });
 
     if (present) {
@@ -328,41 +333,48 @@ const mail = async (req, res) => {
       await Code.create({ email, code });
     }
 
-    const transporter = nodemailer.createTransport({
-      service: "Gmail",
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: "gldhanesh22@gmail.com",
-        pass: "gqku dkpe uwtk yexg",
-      },
-    });
-
-    const info = await transporter.sendMail({
-      from: '"note-hub" <gldhanesh22@gmail.com>',
+    // Send email using Resend
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
       to: email,
       subject: "Verification Code",
-      html: `<div style='font-family: Arial, sans-serif; font-size: 20px; color: #333; background-color: #f7f7f7; padding: 20px; border-radius: 5px;'>
-        <h3 style="color: rgb(8, 56, 188)">Please enter the verification code</h3>
-        <hr>
-        <h4>Hi</h4>
-        <p>
-          Please use the following 4-digit code to verify your email address:
-          <br>
-          <b>${code}</b>
-          <br>
-        </p>
-        <div style="margin-top: 20px;">
-          <h5>Best Regards</h5>
+      html: `
+        <div style="font-family: Arial, sans-serif; font-size: 20px; color: #333; background-color: #f7f7f7; padding: 20px; border-radius: 5px;">
+          <h3 style="color: rgb(8, 56, 188)">Please enter the verification code</h3>
+          <hr>
+          
+          <h4>Hi</h4>
+
+          <p>
+            Please use the following 4-digit code to verify your email address:
+            <br><br>
+
+            <b style="font-size: 30px; letter-spacing: 3px;">
+              ${code}
+            </b>
+
+            <br><br>
+          </p>
+
+          <div style="margin-top: 20px;">
+            <h5>Best Regards</h5>
+            <p>note-hub</p>
+          </div>
         </div>
-      </div>`,
+      `,
     });
 
-    res.status(200).json({ success: "Email sent successfully" });
+    return res.status(200).json({
+      success: "Email sent successfully",
+    });
+
   } catch (error) {
     console.error("Error sending email:", error);
-    res.status(500).json({ error: "Internal server error" });
+
+    return res.status(500).json({
+      error: "Internal server error",
+      details: error.message,
+    });
   }
 };
 
