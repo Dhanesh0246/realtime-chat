@@ -317,9 +317,8 @@ const google = async (req, res, next) => {
   }
 };
 
-export const mail = async (req, res) => {
+const mail = async (req, res) => {
   const { email } = req.body;
-
   const code = Math.floor(1000 + Math.random() * 9000);
 
   try {
